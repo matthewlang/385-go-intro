@@ -25,10 +25,12 @@ func send(to int, msg string, client *rpc.Client) {
 }
 
 func get(who int, client *rpc.Client) {
+
 	req := &mailbox.GetMessageRequest{UserId: who}
 	resp := &mailbox.GetMessageResponse{}
 
 	err := client.Call("MailboxService.GetMessage", req, resp)
+
 	if err != nil {
 		fmt.Printf("Error retrieving: %v\n", err)
 		return

@@ -18,30 +18,30 @@ func NewMailboxService() *MailboxService {
 	return &MailboxService{boxes: make(map[int]*Mailbox)}
 }
 
-func (m *MailboxService) AddMailbox(id int, name string) error {
-	if _, ok := m.boxes[id]; ok {
+func (m *MailboxService) AddMailbox(req *AddMailboxRequest, resp *AddMailboxResponse) error {
+	if _, ok := m.boxes[req.UserId]; ok {
 		return errors.New("user already exists")
 	}
 
-	m.boxes[id] = &Mailbox{UserId: id, UserName: name}
+	m.boxes[req.UserId] = &Mailbox{UserId: req.UserId, UserName: req.UserName}
 	return nil
 }
 
-func (m *MailboxService) PutMessage(id int, message string) error {
-	b, ok := m.boxes[id]
+func (m *MailboxService) PutMessage(req *PutMessageRequest, resp *PutMessageResponse) error {
+	b, ok := m.boxes[req.UserId]
 	if !ok {
 		return errors.New("user doesn't exist")
 	}
-	b.Message = message
+	b.Message = req.Message
 	return nil
 }
 
-func (m *MailboxService) GetMessage(id int) (msg string, err error) {
-	b, ok := m.boxes[id]
+func (m *MailboxService) GetMessage(req *GetMessageRequest, resp *GetMessageResponse) error {
+	b, ok := m.boxes[req.UserId]
 	if !ok {
-		err = errors.New("user doesn't exist")
-		return
+		return errors.New("user doesn't exist")
 	}
-	msg = b.Message
-	return
+	resp.Message = b.Message
+	resp.UserName = b.UserName
+	return nil
 }
